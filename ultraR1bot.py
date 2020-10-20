@@ -4,22 +4,19 @@ import os
 import discord
 
 
-class MyClient(discord.Client):
-    async def on_ready(self):
-        print('Logged on as', self.user)
+prefix = ('¤', 'UltraR1Bot le bot superieur, ', 'nique ta mere ')
 
-    async def on_message(self, message):
-        # don't respond to ourselves
-        if message.author == self.user:
-            return
+bot = commands.Bot(command_prefix=prefix)
 
-        if message.content == 'ping':
-            await message.channel.send('pong')
+bot.load_extension('ultraR1commands')
 
+
+@bot.command(name="reload", pass_context=True)
+async def reload(ctx):
+        bot.reload_extension('ultraR1commands')
 
 
 token = os.environ['DISCORDTOKEN']
-print(token)
 
-client = MyClient()
-client.run(token)
+
+bot.run(token)
