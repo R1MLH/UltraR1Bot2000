@@ -40,9 +40,11 @@ class UltraR1Commands(commands.Cog):
 
 
 def setup(bot):
-    print("Loading Commands Cog")
+    print("> Loading Commands Cog")
     bot.add_cog(UltraR1Commands(bot))
+    print("> Command Cog Loaded")
 
 def teardown(bot):
-    print('Removing commands Cog')
+    print("> Removing Commands Cog")
     bot.remove_cog('UltraR1Commands')
+    print("> Commands Cog Removed")
