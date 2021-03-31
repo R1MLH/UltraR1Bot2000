@@ -1,7 +1,8 @@
 from discord.ext import commands
 import discord
 import json
-from datetime import datetime, timedelta
+import yaml
+import datetime
  
 import asyncio
 
@@ -21,7 +22,7 @@ class UltraR1Commands(commands.Cog):
 
     @commands.command(name="remind", pass_context=True)
     async def remind(self, ctx, reminder, time:int): 
-        self.bot.bg_task = self.bot.loop.create_task(self.timer(timedelta(seconds=time).seconds,reminder,ctx))
+        self.bot.bg_task = self.bot.loop.create_task(self.timer(datetime.timedelta(seconds=time).seconds,reminder,ctx))
         print('added reminder task')
 
 
@@ -36,7 +37,29 @@ class UltraR1Commands(commands.Cog):
         await asyncio.sleep(timestamp)
         await context.send(reminder)
 
-            
+
+    @commands.command(name="reminderDebug",pass_context=True)
+    async def reminderDebug(self,ctx):
+        reminders=self.checkDate(datetime.date.today())
+        for message in reminders:
+            await ctx.send(message)
+    
+    @commands.command(name="remindMe",pass_context=True)
+    async def remindMe(self,ctx,date,message):
+        try:
+            datetime.date.fromisoformat(date)
+            with open("./data/reminders.yaml",'a') as f:
+                 f.write("  - !!python/tuple [{},{}]\n".format(date,message))
+            await ctx.send("Reminder set: {}, {}".format(date,message))
+        except:
+            await ctx.send("La date doit etre au format YYYY-MM-DD")
+        
+
+
+    def checkDate(self,date):
+        with open("./data/reminders.yaml") as f:
+            reminders = yaml.load(f)
+        return [x[1] for x in reminders if x[0]==date]     
 
 
 def setup(bot):
